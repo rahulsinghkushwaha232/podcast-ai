@@ -49,5 +49,8 @@ pip install -r requirements.txt
 python app.py
 ```
 
-## Authors
-- PodcastAI Team
+## 👥 Contributors & Authors
+
+- **Rahul Singh Kushwaha** - [@rahulsinghkushwaha232](https://github.com/rahulsinghkushwaha232) (Lead Developer)
+- **PodcastAI Team**
+
