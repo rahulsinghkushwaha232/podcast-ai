@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run PodcastAI Backend",
+      "type": "shell",
+      "command": "${workspaceFolder}\\backend\\venv\\Scripts\\python.exe",
+      "args": ["app.py"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "flask",
+        "pattern": {
+          "regexp": "^\\s*(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": ".*Running on http://localhost:5000.*"
+        }
+      }
+    },
+    {
+      "label": "Run PodcastAI Frontend",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "http.server", "8000"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "python-http-server",
+        "pattern": {
+          "regexp": "^\\s*(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Serving HTTP on .* port 8000.*"
+        }
+      }
+    },
+    {
+      "label": "Run PodcastAI",
+      "dependsOn": [
+        "Run PodcastAI Backend"
+      ],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PodcastAI | Discover Your Next Frequency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+      :root {
+        --bg-deep: #0f172a;
+        --bg-mid: #111827;
+        --glass: rgba(15, 23, 42, 0.52);
+        --border: rgba(148, 163, 184, 0.18);
+        --brand-start: #2dd4bf;
+        --brand-end: #3b82f6;
+        --text-soft: #cbd5e1;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        transition: background 0.35s ease, color 0.35s ease;
+        background:
+          radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 30%),
+          radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.18), transparent 35%),
+          var(--bg-deep);
+        color: #f8fafc;
+      }
+
+      .glass {
+        background: rgba(15, 23, 42, 0.42);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+      }
+
+      .brand-gradient {
+        background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+      }
+
+      .soft-ring {
+        box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.08), 0 20px 45px rgba(15, 23, 42, 0.45);
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(65px);
+        opacity: 0.45;
+        animation: float 19s ease-in-out infinite alternate;
+      }
+
+      .blob-1 { background: rgba(45, 212, 191, 0.38); width: 20rem; height: 20rem; top: 10%; left: 5%; }
+      .blob-2 { background: rgba(96, 165, 250, 0.25); width: 18rem; height: 18rem; top: 55%; right: 8%; animation-delay: 2s; }
+      .blob-3 { background: rgba(45, 212, 191, 0.2); width: 16rem; height: 16rem; bottom: 5%; left: 38%; animation-delay: 5s; }
+
+      @keyframes float {
+        0% { transform: translateY(0px) translateX(0px) scale(1); }
+        100% { transform: translateY(-18px) translateX(20px) scale(1.08); }
+      }
+
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .skeleton {
+        animation: pulse 1.6s ease-in-out infinite;
+        background: linear-gradient(110deg, rgba(51, 65, 85, 0.42) 8%, rgba(100, 116, 139, 0.22) 18%, rgba(51, 65, 85, 0.42) 33%);
+        background-size: 200% 100%;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.65; background-position: 200% 0; }
+        50% { opacity: 1; background-position: -200% 0; }
+      }
+
+      @keyframes resultIn {
+        from { opacity: 0; transform: translateY(14px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .result-card { animation: resultIn 0.45s ease both; }
+      .result-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 18px 40px rgba(45, 212, 191, 0.12); }
+      .site-nav { background: rgba(15, 23, 42, 0.58); border: 1px solid rgba(148, 163, 184, 0.14); backdrop-filter: blur(18px); }
+      .hero-shell { background: linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(15, 23, 42, 0.46)); }
+      .featured-card { min-height: 322px; }
+      .featured-card img { transition: transform 0.6s ease, opacity 0.3s ease; }
+      .featured-card:hover img { transform: scale(1.06); }
+      .section-kicker { letter-spacing: 0.24em; }
+      .empty-state { background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(30, 41, 59, 0.46)); }
+      .modal-backdrop { animation: fadeIn 0.2s ease both; }
+      .modal-panel { animation: modalIn 0.25s ease both; }
+
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes modalIn { from { opacity: 0; transform: scale(0.94) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+      body.light-mode {
+        --bg-deep: #f8fafc;
+        --bg-mid: #e2e8f0;
+        --border: rgba(15, 23, 42, 0.12);
+        background: #f8fafc;
+        color: #0f172a;
+      }
+
+      body.light-mode .glass { background: rgba(255, 255, 255, 0.68); border-color: rgba(15, 23, 42, 0.12); }
+      body.light-mode .soft-ring { box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 20px 45px rgba(15, 23, 42, 0.12); }
+      body.light-mode .text-white { color: #0f172a !important; }
+      body.light-mode .text-slate-200, body.light-mode .text-slate-300 { color: #475569 !important; }
+      body.light-mode .text-slate-400 { color: #64748b !important; }
+      body.light-mode .bg-slate-900\/35, body.light-mode .bg-slate-900\/50 { background-color: rgba(255, 255, 255, 0.55); }
+      body.light-mode .bg-slate-950\/40 { background-color: rgba(241, 245, 249, 0.75); }
+      body.light-mode .border-slate-700\/80 { border-color: rgba(15, 23, 42, 0.14); }
+      body.light-mode .site-nav { background: rgba(255, 255, 255, 0.78); border-color: rgba(15, 23, 42, 0.1); }
+      body.light-mode .hero-shell, body.light-mode .empty-state { background: rgba(255, 255, 255, 0.78); }
+      body.light-mode .category-pill { border-color: rgba(15, 23, 42, 0.12); color: #334155; }
+      body.light-mode .category-pill.active { background: rgba(45, 212, 191, 0.18); border-color: rgba(45, 212, 191, 0.55); color: #0f172a; }
+      .category-pill.active { background: rgba(45, 212, 191, 0.15); border-color: rgba(45, 212, 191, 0.6); color: #d1fae5; }
+    </style>
+  </head>
+  <body class="min-h-screen overflow-x-hidden">
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav class="site-nav sticky top-4 z-30 mx-auto flex items-center justify-between rounded-2xl px-4 py-3 shadow-xl shadow-slate-950/10 sm:px-5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl brand-gradient shadow-lg shadow-teal-500/30">
+            <i class="fa-solid fa-microphone text-lg text-slate-950"></i>
+          </div>
+          <div>
+            <span class="block text-lg font-bold leading-none tracking-tight">PodcastAI</span>
+            <span class="hidden text-[10px] font-medium uppercase tracking-[0.2em] text-teal-300 sm:block">Find your frequency</span>
+          </div>
+        </div>
+
+        <div class="hidden items-center gap-6 text-sm text-slate-200 md:flex">
+          <a href="#" class="transition hover:text-white">Home</a>
+          <a href="#featuredSection" class="transition hover:text-white">Trending</a>
+          <a href="#categoryFilters" class="transition hover:text-white">Categories</a>
+          <button id="favoritesButton" type="button" class="transition hover:text-teal-300">
+            <i class="fa-solid fa-heart mr-1"></i> My Favorites
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="themeToggle" style="display:none;" type="button" aria-label="Toggle light and dark mode" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-amber-300 transition hover:bg-white/10">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <a style="display:none;" href="https://github.com" target="_blank" rel="noreferrer" class="hidden items-center gap-2 rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-100 transition hover:bg-sky-500/20 sm:inline-flex">
+            <i class="fa-brands fa-github"></i>
+            Star on GitHub
+          </a>
+        </div>
+      </nav>
+
+      <main class="relative z-10 pb-16 pt-6 md:pb-20 md:pt-10">
+        <section class="mx-auto max-w-5xl text-center">
+          <div class="inline-flex items-center gap-2 rounded-full border border-teal-300/25 bg-teal-400/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-teal-200">
+            <i class="fa-solid fa-wave-square"></i>
+            Discover smarter audio
+          </div>
+
+          <h1 class="mt-6 text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
+            Find your next favorite frequency
+          </h1>
+
+          <p class="mx-auto mt-5 max-w-2xl text-base text-slate-300 md:text-xl">
+            AI-powered podcast discovery built to surface the stories, ideas, and voices worth your time.
+          </p>
+
+          <div class="hero-shell soft-ring mx-auto mt-8 max-w-4xl rounded-[28px] border border-white/10 p-4 shadow-2xl shadow-slate-950/40">
+            <div class="flex flex-col gap-3 rounded-[22px] border border-white/10 bg-slate-900/50 p-3 sm:flex-row sm:items-center sm:p-4">
+              <div class="flex flex-1 items-center gap-3 rounded-2xl border border-slate-700/80 bg-slate-950/40 px-4 py-3">
+                <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="E.g., true crime stories, tech startup interviews..."
+                  class="w-full bg-transparent text-base text-white placeholder:text-slate-400 focus:outline-none"
+                  aria-label="Search podcasts"
+                />
+              </div>
+
+              <button
+                id="searchButton"
+                class="brand-gradient inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-base font-semibold text-slate-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                type="button"
+              >
+                <span>Discover</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+              <button class="chip rounded-full border border-white/10 bg-slate-700/40 px-3 py-2 text-sm text-slate-200 transition hover:border-teal-300/40 hover:bg-teal-500/10" data-query="Artificial Intelligence">
+                Artificial Intelligence
+              </button>
+              <button class="chip rounded-full border border-white/10 bg-slate-700/40 px-3 py-2 text-sm text-slate-200 transition hover:border-teal-300/40 hover:bg-teal-500/10" data-query="Startup Founders">
+                Startup Founders
+              </button>
+              <button class="chip rounded-full border border-white/10 bg-slate-700/40 px-3 py-2 text-sm text-slate-200 transition hover:border-teal-300/40 hover:bg-teal-500/10" data-query="Mental Health">
+                Mental Health
+              </button>
+              <button class="chip rounded-full border border-white/10 bg-slate-700/40 px-3 py-2 text-sm text-slate-200 transition hover:border-teal-300/40 hover:bg-teal-500/10" data-query="Space Exploration">
+                Space Exploration
+              </button>
+            </div>
+            <div id="categoryFilters" class="mt-5 flex flex-wrap justify-center gap-2" aria-label="Podcast categories">
+              <button type="button" class="category-pill active rounded-full border px-3 py-1.5 text-sm transition" data-category="">All</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="Tech">Tech</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="Comedy">Comedy</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="News">News</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="True Crime">True Crime</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="Business">Business</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="Health">Health</button>
+              <button type="button" class="category-pill rounded-full border px-3 py-1.5 text-sm transition" data-category="Education">Education</button>
+            </div>
+            <div id="recentSearches" class="mt-4 hidden text-left">
+              <div class="mb-2 flex items-center justify-between px-1 text-xs uppercase tracking-[0.16em] text-slate-400">
+                <span>Recent Searches</span>
+                <button id="clearRecent" type="button" class="normal-case tracking-normal text-teal-300 hover:text-teal-200">Clear</button>
+              </div>
+              <div id="recentChips" class="flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="featuredSection" class="mx-auto mt-14 max-w-6xl">
+          <div class="mb-5 flex items-end justify-between gap-4">
+            <div>
+              <p class="section-kicker text-xs font-semibold uppercase text-teal-300">Curated for curious minds</p>
+              <h2 class="mt-2 text-3xl font-bold text-white">Featured frequencies</h2>
+            </div>
+            <span class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 sm:inline-flex">
+              <i class="fa-solid fa-sparkles text-teal-300"></i> Handpicked for you
+            </span>
+          </div>
+          <div id="featuredGrid" class="grid grid-cols-1 gap-5 md:grid-cols-3"></div>
+        </section>
+
+        <section class="mx-auto mt-12 max-w-6xl">
+          <div id="status" class="mb-8 text-center text-slate-300">
+            <div class="empty-state glass mx-auto flex max-w-xl flex-col items-center justify-center rounded-3xl border border-white/10 px-6 py-12 text-center">
+              <i class="fa-solid fa-headphones text-5xl text-teal-300"></i>
+              <h3 class="mt-5 text-2xl font-semibold text-white">Waiting for your search query...</h3>
+              <p class="mt-2 text-slate-300">Tune in to a topic and we’ll surface the best podcast matches.</p>
+            </div>
+          </div>
+
+          <div id="resultsGrid" class="grid grid-cols-1 gap-6 md:grid-cols-2"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="podcastModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 p-4 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div id="modalPanel" class="modal-panel glass max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/15 p-5 shadow-2xl sm:p-7">
+        <div class="flex items-start justify-between gap-4">
+          <div id="modalContent" class="w-full"></div>
+          <button id="closeModal" type="button" aria-label="Close podcast details" class="shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-slate-200 transition hover:bg-white/10">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+        <script>
+      (() => {
+        const input = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const status = document.getElementById('status');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const featuredSection = document.getElementById('featuredSection');
+        const featuredGrid = document.getElementById('featuredGrid');
+        const categoryFilters = document.getElementById('categoryFilters');
+        const chips = document.querySelectorAll('.chip');
+        const themeToggle = document.getElementById('themeToggle');
+        const favoritesButton = document.getElementById('favoritesButton');
+        const categoryPills = document.querySelectorAll('.category-pill');
+        const recentSearches = document.getElementById('recentSearches');
+        const recentChips = document.getElementById('recentChips');
+        const clearRecent = document.getElementById('clearRecent');
+        const modal = document.getElementById('podcastModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+
+        const favoritesKey = 'favorites';
+        const recentKey = 'recentSearches';
+        const browserResultCache = new Map();
+        let isSearching = false;
+        let activeRequestController = null;
+        let searchRequestId = 0;
+        let retryTimer = null;
+        let showingFavorites = false;
+        let favoriteViewItems = [];
+
+        const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+        }[char]));
+
+        function getSpotifyURL(podcast) {
+          const externalURL = String(podcast?.external_url || '').trim();
+          if (/^https?:\/\//i.test(externalURL) && !/apple\.com\/search\//i.test(externalURL)) {
+            return externalURL;
+          }
+
+          const searchText = [podcast?.title, podcast?.publisher]
+            .filter(Boolean)
+            .join(' ')
+            .trim() || 'podcasts';
+          return `https://podcasts.apple.com/us/search?term=${encodeURIComponent(searchText)}`;
+        }
+
+        function renderEmptyState() {
+          status.innerHTML = `
+            <div class="glass mx-auto flex max-w-xl flex-col items-center justify-center rounded-3xl border border-white/10 px-6 py-12 text-center">
+              <i class="fa-solid fa-headphones text-5xl text-teal-300"></i>
+              <h3 class="mt-5 text-2xl font-semibold text-white">Waiting for your search query...</h3>
+              <p class="mt-2 text-slate-300">Tune in to a topic and we’ll surface the best podcast matches.</p>
+            </div>
+          `;
+        }
+
+        function renderLoadingState(message = 'Scouring the audioverse...') {
+          status.innerHTML = `
+            <div class="grid grid-cols-1 gap-6 text-left md:grid-cols-2">
+              ${Array.from({ length: 4 }, () => `
+                <div class="glass overflow-hidden rounded-[26px] border border-white/10">
+                  <div class="skeleton h-52"></div>
+                  <div class="space-y-4 p-5">
+                    <div class="skeleton h-6 w-4/5 rounded"></div>
+                    <div class="skeleton h-4 w-2/5 rounded"></div>
+                    <div class="space-y-2">
+                      <div class="skeleton h-3 w-full rounded"></div>
+                      <div class="skeleton h-3 w-11/12 rounded"></div>
+                      <div class="skeleton h-3 w-3/4 rounded"></div>
+                    </div>
+                    <div class="skeleton h-11 w-full rounded-2xl"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <p class="mt-5 text-center text-sm text-slate-300">${message}</p>
+          `;
+        }
+
+        function renderNoResults() {
+          status.innerHTML = `
+            <div class="glass mx-auto flex max-w-xl flex-col items-center justify-center rounded-3xl border border-white/10 px-6 py-12 text-center">
+              <i class="fa-solid fa-ghost text-5xl text-sky-300"></i>
+              <h3 class="mt-5 text-2xl font-semibold text-white">No signals found</h3>
+              <p class="mt-2 text-slate-300">Try a broader topic or a different angle to discover more podcasts.</p>
+            </div>
+          `;
+        }
+
+        function renderErrorState(message) {
+          status.innerHTML = `
+            <div class="glass mx-auto max-w-2xl rounded-3xl border border-amber-400/25 bg-amber-500/5 px-6 py-8 text-left">
+              <div class="flex items-start gap-4">
+                <div class="mt-1 flex h-11 w-11 items-center justify-center rounded-full bg-amber-500/15 text-amber-300">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-semibold text-white">Unable to load recommendations</h3>
+                  <p class="mt-1 text-amber-100">${message}</p>
+                  <ul class="mt-4 space-y-2 text-sm text-slate-200">
+                    <li><i class="fa-solid fa-circle-check mr-2 text-teal-300"></i>Backend running with <code class="rounded bg-slate-800 px-2 py-1 text-sky-200">python app.py</code></li>
+                    <li><i class="fa-solid fa-circle-check mr-2 text-teal-300"></i>Check <a href="http://localhost:5000" target="_blank" rel="noreferrer" class="text-sky-300 underline">http://localhost:5000</a></li>
+                    <li><i class="fa-solid fa-circle-check mr-2 text-teal-300"></i>Check the <code class="rounded bg-slate-800 px-2 py-1 text-sky-200">.env</code> file</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        function updateSearchButton(isLoading) {
+          if (isLoading) {
+            searchButton.disabled = true;
+            searchButton.innerHTML = `
+              <span class="inline-flex items-center gap-2">
+                <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-slate-900/30 border-t-slate-900"></span>
+                Searching...
+              </span>
+            `;
+            return;
+          }
+          searchButton.disabled = false;
+          searchButton.innerHTML = `
+            <span>Discover</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          `;
+        }
+
+        function setQuery(text) {
+          const clean = String(text || '').trim();
+          input.value = clean;
+          searchPodcasts(clean);
+        }
+
+        function getFavorites() {
+          try {
+            const saved = JSON.parse(localStorage.getItem(favoritesKey) || '[]');
+            return Array.isArray(saved) ? saved : [];
+          } catch (error) {
+            console.warn('Unable to read favorites:', error);
+            return [];
+          }
+        }
+
+        function saveFavorites(items) {
+          localStorage.setItem(favoritesKey, JSON.stringify(items));
+        }
+
+        function isFavorite(podcast) {
+          return getFavorites().some((item) => item.id === podcast.id);
+        }
+
+        function getRecent() {
+          try {
+            const items = JSON.parse(localStorage.getItem(recentKey) || '[]');
+            return Array.isArray(items) ? items : [];
+          } catch (error) {
+            return [];
+          }
+        }
+
+        function addRecent(query) {
+          const clean = String(query || '').trim();
+          if (!clean) return;
+          const next = [clean, ...getRecent().filter((item) => item.toLowerCase() !== clean.toLowerCase())].slice(0, 5);
+          localStorage.setItem(recentKey, JSON.stringify(next));
+          renderRecent();
+        }
+
+        function renderRecent() {
+          const items = getRecent();
+          recentSearches.classList.toggle('hidden', !items.length || (document.activeElement !== input && input.value.trim()));
+          recentChips.innerHTML = items.map((item) => `
+            <button type="button" class="recent-chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:border-teal-300/40 hover:text-teal-200" data-recent-query="${escapeHTML(item)}">${escapeHTML(item)}</button>
+          `).join('');
+        }
+
+        function renderFeaturedPodcasts() {
+          const featuredPodcasts = [
+            { title: 'The Daily', publisher: 'The New York Times', topic: 'News', description: 'The day’s top stories, explained with clarity and context.', image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80', query: 'daily news' },
+            { title: 'The Diary Of A CEO', publisher: 'Steven Bartlett', topic: 'Business', description: 'Unfiltered conversations about business, life, and personal growth.', image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80', query: 'business leadership' },
+            { title: 'Stuff You Should Know', publisher: 'iHeartPodcasts', topic: 'Education', description: 'Fascinating stories that make the world a little more understandable.', image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80', query: 'science history' }
+          ];
+
+          featuredGrid.innerHTML = featuredPodcasts.map((podcast) => `
+            <button type="button" class="featured-card group glass overflow-hidden rounded-3xl border border-white/10 text-left transition hover:-translate-y-1 hover:border-teal-300/30 hover:bg-slate-800/50" data-featured-query="${podcast.query}">
+              <div class="relative h-40 overflow-hidden bg-slate-800">
+                <img src="${podcast.image}" alt="" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" onerror="this.style.opacity='0'" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 to-transparent"></div>
+                <span class="absolute bottom-3 left-4 rounded-full bg-slate-950/70 px-2.5 py-1 text-xs text-teal-100 ring-1 ring-white/10">${podcast.topic}</span>
+              </div>
+              <div class="flex flex-col p-4">
+                <h3 class="text-lg font-semibold text-white">${podcast.title}</h3>
+                <p class="mt-1 text-xs text-slate-400">${podcast.publisher}</p>
+                <p class="mt-3 line-clamp-2 text-sm leading-5 text-slate-300">${podcast.description}</p>
+                <span class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-teal-300">
+                  Explore similar
+                  <i class="fa-solid fa-arrow-right text-xs transition group-hover:translate-x-1"></i>
+                </span>
+              </div>
+            </button>
+          `).join('');
+        }
+
+        function renderResults(data) {
+          const items = Array.isArray(data) ? data : [];
+          window.currentPodcastResults = items;
+          resultsGrid.innerHTML = '';
+
+          if (!items.length) {
+            renderNoResults();
+            return;
+          }
+
+          status.innerHTML = '';
+          resultsGrid.innerHTML = items.map((podcast, index) => {
+            const image = podcast.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80';
+            const title = (podcast.title || 'Untitled Podcast').replace(/</g, '&lt;');
+            const publisher = (podcast.publisher || 'Unknown').replace(/</g, '&lt;');
+            const description = (podcast.description || 'No description available.').replace(/</g, '&lt;');
+            const topic = Array.isArray(podcast.topics) && podcast.topics.length ? podcast.topics[0] : 'Podcast';
+            const externalUrl = getSpotifyURL(podcast);
+            const episodes = podcast.episodes ?? 0;
+            const saved = isFavorite(podcast);
+
+            return `
+              <article class="result-card group relative cursor-pointer glass overflow-hidden rounded-[26px] border border-white/10 shadow-xl shadow-slate-950/25" style="animation-delay: ${Math.min(index * 60, 480)}ms" data-result-index="${index}">
+                <button type="button" data-favorite-index="${index}" aria-label="${saved ? 'Remove from favorites' : 'Save podcast'}" class="favorite-button absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-slate-950/65 text-white ring-1 ring-white/15 backdrop-blur transition hover:scale-110 hover:text-rose-300">
+                  <i class="${saved ? 'fa-solid text-rose-400' : 'fa-regular'} fa-heart"></i>
+                </button>
+                <div class="relative h-52 overflow-hidden bg-slate-800">
+                  <img src="${image}" alt="${title}" class="h-full w-full object-cover" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80';" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent"></div>
+                  <div class="absolute left-4 top-4 rounded-full bg-slate-950/70 px-2.5 py-1 text-xs font-medium text-sky-100 ring-1 ring-white/10">${topic}</div>
+                </div>
+                <div class="space-y-4 p-5">
+                  <div class="space-y-2">
+                    <h3 class="line-clamp-2 text-xl font-semibold text-white">${title}</h3>
+                    <p class="text-sm text-slate-300">By <span class="font-medium text-slate-100">${publisher}</span></p>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-300">
+                    <span class="inline-flex items-center gap-2"><i class="fa-solid fa-headphones text-teal-300"></i> ${episodes} episodes</span>
+                  </div>
+                  <p class="line-clamp-3 text-sm leading-6 text-slate-300">${description}</p>
+                  <a href="${externalUrl}" target="_blank" rel="noreferrer" data-listen-link class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm font-semibold text-sky-100 transition hover:bg-sky-500/20">
+                    <i class="fa-brands fa-apple"></i> Listen on Apple Podcasts
+                  </a>
+                </div>
+              </article>
+            `;
+          }).join('');
+        }
+
+        function renderFavorites() {
+          showingFavorites = true;
+          favoriteViewItems = getFavorites();
+          featuredSection.classList.add('hidden');
+          status.innerHTML = favoriteViewItems.length
+            ? `<div class="mb-6 text-left"><p class="text-sm uppercase tracking-[0.2em] text-teal-300">Your collection</p><h2 class="mt-2 text-3xl font-bold text-white">My Favorites</h2></div>`
+            : `<div class="glass mx-auto flex max-w-xl flex-col items-center justify-center rounded-3xl border border-white/10 px-6 py-12 text-center"><i class="fa-regular fa-heart text-5xl text-rose-300"></i><h3 class="mt-5 text-2xl font-semibold text-white">No favorites yet — start saving podcasts you love!</h3></div>`;
+          resultsGrid.innerHTML = favoriteViewItems.map((podcast, index) => {
+            const title = escapeHTML(podcast.title || 'Untitled Podcast');
+            const publisher = escapeHTML(podcast.publisher || 'Unknown');
+            const description = escapeHTML(podcast.description || 'No description available.');
+            const topic = escapeHTML(podcast.topics?.[0] || 'Podcast');
+            const image = escapeHTML(podcast.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80');
+            const externalURL = escapeHTML(getSpotifyURL(podcast));
+            const episodes = escapeHTML(podcast.episodes ?? 0);
+            const saved = isFavorite(podcast);
+
+            return `
+              <article class="result-card group relative cursor-pointer glass overflow-hidden rounded-[26px] border border-white/10 shadow-xl shadow-slate-950/25" data-favorite-card-index="${index}">
+                <button type="button" data-favorite-index="${index}" aria-label="${saved ? 'Remove from favorites' : 'Save podcast'}" class="favorite-button absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-slate-950/65 text-white ring-1 ring-white/15 backdrop-blur transition hover:scale-110 hover:text-rose-300">
+                  <i class="${saved ? 'fa-solid text-rose-400' : 'fa-regular'} fa-heart"></i>
+                </button>
+                <div class="relative h-52 overflow-hidden bg-slate-800">
+                  <img src="${image}" alt="${title}" class="h-full w-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent"></div>
+                  <div class="absolute left-4 top-4 rounded-full bg-slate-950/70 px-2.5 py-1 text-xs font-medium text-sky-100 ring-1 ring-white/10">${topic}</div>
+                </div>
+                <div class="space-y-4 p-5">
+                  <div class="space-y-2">
+                    <h3 class="line-clamp-2 text-xl font-semibold text-white">${title}</h3>
+                    <p class="text-sm text-slate-300">By <span class="font-medium text-slate-100">${publisher}</span></p>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-300">
+                    <span class="inline-flex items-center gap-2"><i class="fa-solid fa-headphones text-teal-300"></i> ${episodes} episodes</span>
+                  </div>
+                  <p class="line-clamp-3 text-sm leading-6 text-slate-300">${description}</p>
+                  <a href="${externalURL}" target="_blank" rel="noreferrer" data-listen-link class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm font-semibold text-sky-100 transition hover:bg-sky-500/20">
+                    <i class="fa-brands fa-spotify"></i> Listen on Spotify
+                  </a>
+                </div>
+              </article>
+            `;
+          }).join('');
+        }
+
+        function openModal(podcast) {
+          if (!podcast) return;
+          const topics = Array.isArray(podcast.topics) && podcast.topics.length ? podcast.topics : ['Podcast'];
+          modalContent.innerHTML = `
+            <div class="grid gap-6 sm:grid-cols-[180px_1fr]">
+              <img src="${escapeHTML(podcast.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80')}" alt="${escapeHTML(podcast.title)}" class="h-48 w-full rounded-2xl object-cover sm:h-44" />
+              <div>
+                <p class="text-sm uppercase tracking-[0.18em] text-teal-300">Podcast details</p>
+                <h2 class="mt-2 text-2xl font-bold text-white">${escapeHTML(podcast.title || 'Untitled Podcast')}</h2>
+                <p class="mt-2 text-slate-300">By ${escapeHTML(podcast.publisher || 'Unknown')} · ${escapeHTML(podcast.episodes ?? 0)} episodes</p>
+                <div class="mt-3 flex flex-wrap gap-2">${topics.map((topic) => `<span class="rounded-full bg-teal-400/10 px-3 py-1 text-xs text-teal-200">${escapeHTML(topic)}</span>`).join('')}</div>
+              </div>
+            </div>
+            <p class="mt-6 leading-7 text-slate-200">${escapeHTML(podcast.description || 'No description available.')}</p>
+            <a href="${escapeHTML(getSpotifyURL(podcast))}" target="_blank" rel="noreferrer" class="brand-gradient mt-6 inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-semibold text-slate-950"><i class="fa-brands fa-spotify"></i> Listen on Spotify</a>
+          `;
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+
+        function closePodcastModal() {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+
+        function toggleFavorite(podcast) {
+          const favorites = getFavorites();
+          const next = favorites.some((item) => item.id === podcast.id)
+            ? favorites.filter((item) => item.id !== podcast.id)
+            : [podcast, ...favorites];
+          saveFavorites(next);
+          if (showingFavorites) {
+            renderFavorites();
+          } else {
+            renderResults(window.currentPodcastResults || []);
+          }
+        }
+
+        function refreshFavoriteButtonIcons() {
+          document.querySelectorAll('[data-favorite-index]').forEach((button) => {
+            const list = showingFavorites ? favoriteViewItems : (window.currentPodcastResults || []);
+            const source = list[Number(button.dataset.favoriteIndex)];
+            if (!source) return;
+            const saved = isFavorite(source);
+            button.innerHTML = `<i class="${saved ? 'fa-solid text-rose-400' : 'fa-regular'} fa-heart"></i>`;
+            button.setAttribute('aria-label', saved ? 'Remove from favorites' : 'Save podcast');
+          });
+        }
+
+        async function searchPodcasts(queryText = input.value.trim(), retryCount = 0) {
+          const query = String(queryText || '').trim();
+          if (retryTimer) {
+            clearTimeout(retryTimer);
+            retryTimer = null;
+          }
+
+          if (!query) {
+            resultsGrid.innerHTML = '';
+            featuredSection.classList.remove('hidden');
+            renderEmptyState();
+            updateSearchButton(false);
+            return;
+          }
+
+          const requestTimeoutMs = 10000;
+          const requestId = ++searchRequestId;
+
+          if (isSearching && retryCount === 0 && activeRequestController) {
+            activeRequestController.abort();
+          }
+
+          isSearching = true;
+          updateSearchButton(true);
+          featuredSection.classList.add('hidden');
+          renderLoadingState();
+
+          const normalizedQuery = query.toLowerCase();
+          const cachedResults = browserResultCache.get(normalizedQuery) || [{
+            id: `query-${normalizedQuery.replace(/[^a-z0-9]+/g, '-')}`,
+            title: `Podcasts about ${query}`,
+            description: `Explore podcast conversations, stories, and ideas related to ${query}.`,
+            publisher: 'PodcastAI Discovery',
+            episodes: 0,
+            image_url: '',
+            topics: [query],
+            external_url: 'https://podcasts.apple.com/'
+          }];
+
+          browserResultCache.set(normalizedQuery, cachedResults);
+          renderResults(cachedResults);
+
+          try {
+            const controller = new AbortController();
+            activeRequestController = controller;
+            const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
+            const response = await fetch('http://localhost:5000/recommend', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query }),
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (requestId !== searchRequestId) return;
+            if (!response.ok) throw new Error('The server returned an error.');
+
+            const data = await response.json();
+            if (Array.isArray(data) && data.length) {
+              browserResultCache.set(normalizedQuery, data);
+              renderResults(data);
+            }
+          } catch (error) {
+            if (requestId !== searchRequestId) return;
+            const timedOut = error?.name === 'AbortError';
+            renderResults(cachedResults);
+            status.insertAdjacentHTML('afterbegin', `<p class="mb-5 text-center text-sm text-amber-200">${timedOut ? 'Showing instant results while the live directory is slow.' : 'Showing instant results while the live directory reconnects.'}</p>`);
+          } finally {
+            if (requestId === searchRequestId) {
+              isSearching = false;
+              activeRequestController = null;
+              updateSearchButton(false);
+              refreshFavoriteButtonIcons();
+            }
+          }
+        }
+
+        function applyTheme(isLight) {
+          document.body.classList.toggle('light-mode', isLight);
+          themeToggle.innerHTML = `<i class="fa-solid ${isLight ? 'fa-moon' : 'fa-sun'}"></i>`;
+          themeToggle.classList.toggle('text-sky-600', isLight);
+          localStorage.setItem('podcastTheme', isLight ? 'light' : 'dark');
+        }
+
+        function bindEvents() {
+          searchButton.addEventListener('click', () => searchPodcasts(input.value));
+          input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              searchPodcasts(input.value);
+            }
+          });
+
+          chips.forEach((chip) => {
+            chip.addEventListener('click', () => setQuery(chip.dataset.query));
+          });
+
+          categoryFilters.addEventListener('click', (event) => {
+            const pill = event.target.closest('.category-pill');
+            if (!pill) return;
+            categoryPills.forEach((item) => item.classList.toggle('active', item === pill));
+            setQuery(pill.dataset.category || '');
+          });
+
+          featuredGrid.addEventListener('click', (event) => {
+            const featuredCard = event.target.closest('[data-featured-query]');
+            if (featuredCard) setQuery(featuredCard.dataset.featuredQuery);
+          });
+
+          recentChips.addEventListener('click', (event) => {
+            const recentChip = event.target.closest('[data-recent-query]');
+            if (recentChip) setQuery(recentChip.dataset.recentQuery);
+          });
+
+          clearRecent.addEventListener('click', () => {
+            localStorage.removeItem(recentKey);
+            renderRecent();
+          });
+
+          favoritesButton.addEventListener('click', () => {
+            showingFavorites = true;
+            renderFavorites();
+          });
+
+          document.addEventListener('click', (event) => {
+            const favoriteButton = event.target.closest('[data-favorite-index]');
+            if (favoriteButton) {
+              event.stopPropagation();
+              const list = showingFavorites ? favoriteViewItems : (window.currentPodcastResults || []);
+              const source = list[Number(favoriteButton.dataset.favoriteIndex)];
+              if (source) toggleFavorite(source);
+              return;
+            }
+
+            if (event.target.closest('[data-listen-link]')) return;
+
+            const resultCard = event.target.closest('[data-result-index]');
+            const favoriteCard = event.target.closest('[data-favorite-card-index]');
+            const card = resultCard || favoriteCard;
+            if (!card) return;
+
+            const index = Number((resultCard || favoriteCard).dataset.resultIndex || (favoriteCard || resultCard).dataset.favoriteCardIndex);
+            const list = showingFavorites ? favoriteViewItems : (window.currentPodcastResults || []);
+            const source = list[index];
+            if (source) openModal(source);
+          });
+
+          modal.addEventListener('click', (event) => {
+            if (event.target === modal) closePodcastModal();
+          });
+          closeModal.addEventListener('click', closePodcastModal);
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closePodcastModal();
+          });
+
+          input.addEventListener('focus', renderRecent);
+          input.addEventListener('input', () => {
+            renderRecent();
+            if (!input.value.trim()) {
+              featuredSection.classList.remove('hidden');
+            }
+          });
+
+          themeToggle.addEventListener('click', () => {
+            applyTheme(!document.body.classList.contains('light-mode'));
+          });
+        }
+
+        Object.entries({
+          tech: 'Technology podcasts',
+          comedy: 'Comedy podcasts',
+          news: 'News podcasts',
+          'true crime': 'True Crime podcasts',
+          business: 'Business podcasts',
+          health: 'Health podcasts',
+          education: 'Education podcasts'
+        }).forEach(([query, title]) => {
+          browserResultCache.set(query, [{
+            id: `instant-${query}`,
+            title,
+            description: `Discover the latest ${query} conversations and shows.`,
+            publisher: 'PodcastAI',
+            episodes: 0,
+            image_url: '',
+            topics: [query],
+            external_url: 'https://podcasts.apple.com/'
+          }]);
+        });
+
+        ['tech', 'comedy', 'news', 'true crime', 'business', 'health', 'education'].forEach((query) => {
+          try {
+            const saved = JSON.parse(localStorage.getItem(`podcastResults:${query}`) || 'null');
+            if (!browserResultCache.has(query) && Array.isArray(saved) && saved.length) {
+              browserResultCache.set(query, saved);
+            }
+          } catch (error) {
+            console.warn('Unable to restore cached podcast results:', error);
+          }
+        });
+
+        categoryPills.forEach((pill) => {
+          if (!pill.classList.contains('active')) {
+            pill.classList.add('border-white/10', 'bg-slate-700/40', 'text-slate-300');
+          } else {
+            pill.classList.add('border-teal-300/60', 'bg-teal-400/15', 'text-teal-200');
+          }
+        });
+
+        applyTheme(localStorage.getItem('podcastTheme') === 'light');
+        renderFeaturedPodcasts();
+        renderRecent();
+        renderEmptyState();
+        updateSearchButton(false);
+        bindEvents();
+      })();
+    </script>
+  </body>
+</html>
