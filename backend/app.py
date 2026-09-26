@@ -138,7 +138,7 @@ INSTANT_RESULTS = {
 
 @app.route("/")
 def home():
-    return "Welcome to the Podcast App!"
+    return frontend()
 
 
 @app.route("/app")

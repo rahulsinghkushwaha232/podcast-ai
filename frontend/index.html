@@ -669,7 +669,8 @@
             const controller = new AbortController();
             activeRequestController = controller;
             const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
-            const response = await fetch('http://localhost:5000/recommend', {
+            const apiBase = window.location.port === '8000' ? 'http://localhost:5000' : '';
+            const response = await fetch(`${apiBase}/recommend`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ query }),
